@@ -1,0 +1,104 @@
+{% load static %}
+<!-- New Arrival Product Section Start -->
+<div class="product-section section mb-60">
+    <div class="container">
+        <div class="row">
+            
+            <!-- Section Title Start -->
+            <div class="col-12 mb-40">
+                <div class="section-title-one" data-title="NEW ARRIVAL"><h1>Availble Products</h1></div>
+            </div><!-- Section Title End -->
+            
+            <div class="col-12">
+                <div class="row">
+                    {% if products %}
+                    {% for product in products %}  
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
+                        <!-- Product Start -->
+                        <div class="ee-product">
+
+                            <!-- Image -->
+                            <div class="image">
+
+                                <span class="label sale">sale</span>
+
+                                <a href="{{ product.get_url }}" class="img"><img src="{{ product.images.url }}" alt="Product Image"></a>
+
+                               
+
+                            </div>
+
+                            <!-- Content -->
+                            <div class="content">
+
+                                <!-- Category & Title -->
+                                <div class="category-title">
+
+                                    <a href="#" class="cat">{{ product.category }}</a>
+                                    <h5 class="title"><a href="{{product.get_url}}">{{ product.product_name }}</a></h5>
+
+                                </div>
+
+                                <!-- Price & Ratting -->
+                                <div class="price-ratting">
+
+                                    <h5 class="price"><span class="old">$360 </span>{{product.price}}</h5>
+                                    <div class="ratting">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-half-o"></i>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div><!-- Product End -->
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                   
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="row mt-30">
+        <div class="col">
+
+    <nav class="mt-4" aria-label="Page navigation sample">
+        {% if products.has_other_pages %}
+          <ul class="pagination">
+                {% if products.has_previous %}
+            <li class="page-item"><a class="fa fa-angle-left" href="?page={{products.previous_page_number}}">Previous</a></li>
+                {% else %}
+                <li class="page-item disabled"><a class="fa fa-angle-left" href="#">Previous</a></li>
+                {% endif %}
+    
+                {% for i in products.paginator.page_range %}
+                    {% if products.number == i %}
+                    <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                    {% endif %}
+            {% endfor %}
+    
+                {% if products.has_next %}
+                <li class="page-item"><a class="fa fa-angle-right" href="?page={{products.next_page_number}}">Next</a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="fa fa-angle-right" href="#">Next</a></li>
+                {% endif %}
+          </ul>
+        {% endif %}
+    </nav>
+    
+    
+           
+            
+        
+    </div>
+</div><!-- New Arrival Product Section End -->

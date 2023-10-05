@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="shopping-cart section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- Shopping Summery -->
+                <div class="card">
+					<h5 class="card-header">Billing Address</h5>
+					<div class="card-body">
+						
+						<p class="card-text mb-0">{{order.country}}</p>
+						<p class="card-text mb-0">{{order.email}}</p>
+						<p class="card-text mb-0">{{order.phone}}</p>
+                        
+						{% if order.order_note %}
+						<b> </b> {{order.order_note}}
+						{% endif %}
+
+
+					</div>
+				</div>
+				<div class="card">
+					<h5 class="card-header">Payment Method</h5>
+					<div class="card-body">
+						<p class="card-text mb-0">{{order.network}}</p>
+
+					</div>
+				</div>
+               
+                <!--/ End Shopping Summery -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 ee-login">
+                <!-- Total Amount -->
+                <div class="total-amount">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-5 col-12">
+                           
+                        </div>
+                        <div class="col-lg-4 col-md-7 col-12">
+                            <div class="right">
+                                <ul>
+                                    <li>Subtotal<span>{{total}} Ugx</span></li>
+                                    <li>Tax<span>{{tax}} Ugx</span></li>
+                                    
+                                    <li class="last">Grand Total<span>{{grand_total}} Ugx</span></li>
+                                </ul>
+                                <button type="button" class="button5 btn" id="start-payment-button"  onclick="makePayment()">
+                                     pay Now
+                                    
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/ End Total Amount -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ End Shopping Cart -->
+        
+<!-- Start Shop Services Area  -->
+
+<!-- Add the necessary HTML container where you want to render the payment button -->
+
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+
+
+
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var amount = "{{ grand_total }}";
+    var email = "{{ order.email }}";
+    var network = "{{ order.network }}";
+    var url = "{% url 'payments' %}";
+    var csrftoken = getCookie('csrftoken');
+    var phone = "{{ order.phone }}";
+    var orderID = "{{ order.order_number }}";
+    var payment_method = 'Flutterwave';
+    var redirect_url = "{% url 'order_complete' %}";
+
+    function makePayment() {
+        FlutterwaveCheckout({
+            public_key: 'FLWPUBK_TEST-6a59e5e5663e2743d14684f65de00f2e-X',
+            tx_ref: 'FLWSECK_TEST-75d417433b2b99d5f70c1e4bcb1aa7a1-X',
+            amount: amount,
+            currency: 'UGX',
+            payment_options: "card,mobilemoneyuganda,ussd",
+            redirect_url: redirect_url,
+
+            customer: {
+                email: email,
+                phone_number: phone,
+                name: email,
+                network: network,
+            },
+            customizations: {
+                title: 'Pcwald',
+                description: 'Payment for Order ' + orderID,
+                logo: '<img src="{% static "images/pclogo.png" %}">',
+            },
+            callback: function(response) {
+                if (response.data.status === 'successful') {
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrftoken,
+                        },
+                        body: JSON.stringify({
+                            orderID: orderID,
+                            transID: response.data.id,
+                            payment_method: payment_method,
+                            status: response.data.status,
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        window.location.href = redirect_url + '?order_number=' + data.order_number + '&payment_id=' + data.transID;
+                    });
+                }
+            },
+            onclose: function() {
+                // Handle the case when the payment popup is closed by the user
+            }
+        });
+    }
+
+    // Call the makePayment function when needed, such as on a button click
+    makePayment();
+</script>
+
+{% endblock %}

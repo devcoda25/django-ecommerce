@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<!-- Checkout Page Start -->
+<!-- Checkout Page Start -->
+<div class="page-section section mt-90 mb-30">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                
+                <!-- Checkout Form s-->
+                <form action="{% url 'place_order' %}" method="POST" class="checkout-form">
+                    {% csrf_token %}
+                   <div class="row row-40">
+                       
+                       <div class="col-lg-7 mb-20">
+                          
+                           <!-- Billing Address -->
+                           <div id="billing-form" class="mb-40">
+                               <h4 class="checkout-title">Payment  Details</h4>
+
+                               <div class="row">
+
+                                   
+
+                                   <div class="col-md-6 col-12 mb-20">
+                                       <label>Email Address*</label>
+                                       <input name="email" type="email" placeholder="Email Address">
+                                   </div>
+
+                                   <div class="col-md-6 col-12 mb-20">
+                                       <label>Phone no*</label>
+                                       <input name="phone" type="text" placeholder="Phone number">
+                                   </div>
+
+                                  
+
+                                  
+                                   <div class="col-md-6 col-12 mb-20">
+                                       <label>Payment Method</label>
+                                       <select  name="mm_number" class="nice-select">
+                                            <option>MTN</option>
+                                            <option>AIRTEL</option>
+                                            
+                                       </select>
+                                   </div>
+
+                                   <div class="col-md-6 col-12 mb-20">
+                                       <label>Town/City*</label>
+                                       <input name="city" type="text" placeholder="Town/City">
+                                   </div>
+
+                                   <div class="col-md-6 col-12 mb-20">
+                                    <label>Order Note*</label>
+                                    <textarea name="order_note" type="text" col="2" row="2" placeholder="Town/City"> </textarea>
+                                </div>
+
+
+                               </div>
+
+                           </div>
+                           
+                         
+                       </div>
+                       
+                       <div class="col-lg-5">
+                           <div class="row">
+                               
+                               <!-- Cart Total -->
+                               <div class="col-12 mb-60">
+                               
+                                   <h4 class="checkout-title">Cart Total</h4>
+                           
+                                   <div class="checkout-cart-total">
+
+                                       <h4>Product <span>Total</span></h4>
+                                       
+                                       <ul>
+                                        {% for cart_item in cart_items %}
+                                           <li>{{ cart_item.product.product_name }} <span>{{ cart_item.sub_total }}</span></li>
+                                          
+                                           {% endfor %}
+                                       </ul>
+                                       
+                                     
+                                       
+                                   </div>
+                                   
+                               </div>
+                               
+                               <!-- Payment Method -->
+                               <div class="col-12 mb-60">
+                               
+                                   <h4 class="checkout-title">Payment Method</h4>
+                           
+                                  
+                                   
+                                   <button  type="submit" name="submit"  class="place-order">Place order</button>
+                                   
+                               </div>
+                               
+                           </div>
+                       </div>
+                       
+                   </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Checkout Page End --> 
+<!-- Checkout Page End --> 
+{% endblock %}
